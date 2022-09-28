@@ -1,0 +1,27 @@
+{
+  "name": "habpi-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Team-HABPI/HABPI-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Team-HABPI/HABPI-backend/issues"
+  },
+  "homepage": "https://github.com/Team-HABPI/HABPI-backend#readme",
+  "dependencies": {
+    "config": "^3.3.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "mongoose": "^6.6.2"
+  }
+}
