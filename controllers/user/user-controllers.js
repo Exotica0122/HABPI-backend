@@ -9,15 +9,47 @@ const HttpError = require("../../models/http-error");
  *       because it is unsafe
  */
 const getAllUsers = async (req, res, next) => {
-  let users;
+    let users;
 
-  try {
-    users = await User.find();
-  } catch (err) {
-    return next(new Error("Couldn't find Users"));
-  }
+    try {
+        users = await User.find();
+    } catch (err) {
+        return next(new Error("Couldn't find Users"));
+    }
 
-  res.json({ users: users.map((user) => user.toObject({ getters: true })) });
+    res.json({ users: users.map((user) => user.toObject({ getters: true })) });
+};
+
+const getUserById = async (req, res, next) => {
+    const userId = req.params.uid;
+
+    let user;
+    try {
+        user = await User.findById(userId);
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not find the user"),
+            500
+        );
+    }
+
+    if (!user) {
+        return next(
+            new HttpError("Couldn't find the user with provided id.", 404)
+        );
+    }
+
+    const userJSON = {
+        name: user.name,
+        email: user.email,
+        age: user.age,
+        gender: user.gender,
+        phone: user.phone,
+        pets: user.pets,
+        services: user.services,
+    };
+
+    return res.status(200).json(userJSON);
 };
 
 const postSignUp = async (req, res, next) => {
@@ -122,6 +154,7 @@ const updateUserById = async (req, res, next) => {
 };
 
 exports.getAllUsers = getAllUsers;
+exports.getUserById = getUserById;
 exports.postSignUp = postSignUp;
 exports.postLogin = postLogin;
 exports.updateUserById = updateUserById;
