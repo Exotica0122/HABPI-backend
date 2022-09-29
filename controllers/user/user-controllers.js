@@ -9,15 +9,15 @@ const HttpError = require("../../models/http-error");
  *       because it is unsafe
  */
 const getAllUsers = async (req, res, next) => {
-    let users;
+  let users;
 
-    try {
-        users = await User.find();
-    } catch (err) {
-        return next(new Error("Couldn't find Users"));
-    }
+  try {
+    users = await User.find();
+  } catch (err) {
+    return next(new Error("Couldn't find Users"));
+  }
 
-    res.json({ users: users.map((user) => user.toObject({ getters: true })) });
+  res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 };
 
 const postSignUp = async (req, res, next) => {
