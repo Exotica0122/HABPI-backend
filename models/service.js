@@ -9,7 +9,7 @@ const ServiceSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    user: [{ type: mongoose.Types.ObjectId, required: true, ref: "User" }],
+    users: [{ type: mongoose.Types.ObjectId, required: true, ref: "User" }],
     minPrice:{
         type: Number,
         required: true

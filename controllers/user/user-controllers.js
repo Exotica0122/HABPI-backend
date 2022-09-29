@@ -51,5 +51,39 @@ const postSignUp = async (req, res, next) => {
     res.status(201).json({ user: createdUser.toObject({ getters: true }) });
 };
 
+const updateUserById = async (req, res, next) => {
+    const userId = req.params.uid;
+
+    console.log(userId);
+    const { name, email, age, gender, phone } = req.body;
+
+    let updatedUser;
+    try {
+        updatedUser = await User.findById(userId);
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not update place.", 500)
+        );
+    }
+    updatedUser.name = name;
+    updatedUser.email = email;
+    updatedUser.age = age;
+    updatedUser.gender = gender;
+    updatedUser.phone = phone;
+
+    try {
+        await updatedUser.save();
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not update place.", 500)
+        );
+    }
+
+    return res
+        .status(200)
+        .json({ user: updatedUser.toObject({ getters: true }) });
+};
+
 exports.getAllUsers = getAllUsers;
 exports.postSignUp = postSignUp;
+exports.updateUserById = updateUserById;
