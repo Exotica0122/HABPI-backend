@@ -15,21 +15,21 @@ const getPet = async (req, res) => {
 
 const postPet = async (req, res) => {
   const { name, age, breed } = req.body;
-  console.log(req.body);
-//   const createdPet = new Pet({
-//     name,
-//     age,
-//     breed,
-//   });
+  console.log(req);
+  const createdPet = new Pet({
+    name,
+    age,
+    breed,
+  });
 
-//   try {
-//     createdPet.save();
-//   } catch (err) {
-//     return next(new HttpError("Pet creation failed", 500));
-//   }
+  try {
+    createdPet.save();
+  } catch (err) {
+    return next(new HttpError("Pet creation failed", 500));
+  }
 
-//   res.status(201).json({ pet: createdPet.toObject({ getters: true }) });
-res.status(201);
+  res.status(201).json({ pet: createdPet.toObject({ getters: true }) });
+
 };
 
 exports.getPet = getPet;
