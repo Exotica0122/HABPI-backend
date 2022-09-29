@@ -39,16 +39,17 @@ const deletePet = async (req, res) => {
     return res.status(200).json({ pet: deletePet.toObject({ getters: true }) });
 };
 
-const getPetByID = async (req, res) => {
-    const userID = req.params.uid;
+const getPetByID = async (req, res, next) => {
+    const userId = req.params.uid;
     let foundPet;
 
     try {
-        foundPet = await Pet.findById(userID);
+        foundPet = await Pet.findById(userId);
     } catch (err) {
-        return next(new Error("Couldn't find pet with id:", userID));
+        return next(new Error("Couldn't find pet with id:", userId));
     }
-    res.json(foundPet.toObject({ getters: true }));
+
+    res.json({ pet: foundPet.toObject({ getters: true }) });
 };
 
 const getPet = async (req, res) => {
