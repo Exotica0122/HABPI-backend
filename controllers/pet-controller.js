@@ -5,7 +5,6 @@ const Pet = require("../models/pet");
 const editPet = async (req, res) => {
   const userId = req.params.uid;
   const { name, age, breed } = req.body;
-  // console.log(pet.name)
 
   let updatedPet;
   try {
@@ -42,7 +41,6 @@ const deletePet = async (req, res) => {
 
 const getPetByID = async (req, res) => {
   const userID=req.params.uid;
-  console.log(userID)
   let foundPet;
 
   try{
@@ -50,7 +48,6 @@ const getPetByID = async (req, res) => {
   } catch(err){
     return next(new Error("Couldn't find pet with id:",userID))
   }
-  console.log(foundPet)
   res.json(foundPet.toObject({getters:true}));
 };
 
