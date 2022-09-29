@@ -2,87 +2,91 @@ const mongoose = require("mongoose");
 const HttpError = require("../../models/http-error");
 const Pet = require("../../models/pet");
 
-const editPet = async (req, res) => {
-    const userId = req.params.uid;
-    const { name, age, breed } = req.body;
+const editPetId = async (req, res, next) => {
+  const petId = req.params.pid;
+  const { name, age, breed } = req.body;
 
-    let updatedPet;
-    try {
-        updatedPet = await Pet.findById(userId);
-    } catch (err) {
-        return next(new HttpError("Something we wrong, can't update pet", 500));
-    }
-    updatedPet.name = name;
-    updatedPet.age = age;
-    updatedPet.breed = breed;
-    try {
-        updatedPet.save();
-    } catch (err) {
-        return next(
-            new HttpError("Something went wrong could not save update pet", 500)
-        );
-    }
-    return res
-        .status(200)
-        .json({ pet: updatedPet.toObject({ getters: true }) });
+  let updatedPet;
+  try {
+    updatedPet = await Pet.findById(petId);
+  } catch (err) {
+    return next(new HttpError("Something we wrong, can't update pet", 500));
+  }
+  updatedPet.name = name;
+  updatedPet.age = age;
+  updatedPet.breed = breed;
+  try {
+    updatedPet.save();
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong could not save updated pet", 500)
+    );
+  }
+  return res.status(200).json({ pet: updatedPet.toObject({ getters: true }) });
 };
 
-const deletePet = async (req, res) => {
-    const userID = req.params.uid;
-    let deletePet;
-    try {
-        deletePet = await Pet.findOneAndDelete(userID);
-    } catch (err) {
-        return next(new HttpError("Something went wrong, can't find pet", 500));
-    }
+const deletePet = async (req, res, next) => {
+  const petId = req.params.pid;
+  let petToDelete;
+  try {
+    petToDelete = await Pet.findById(petId);
+  } catch (err) {
+    return next(
+      new HttpError("Something went wrong finding pet to delete", 500)
+    );
+  }
 
-    return res.status(200).json({ pet: deletePet.toObject({ getters: true }) });
+  try {
+    petToDelete.remove();
+  } catch (err) {
+    return next(new HttpError("Something went wrong removing pet", 500));
+  }
+  return res.status(200).json({ pet: petToDelete.toObject({ getters: true }) });
 };
 
 const getPetByID = async (req, res, next) => {
-    const userId = req.params.uid;
-    let foundPet;
+  const petId = req.params.pid;
+  let foundPet;
 
-    try {
-        foundPet = await Pet.findById(userId);
-    } catch (err) {
-        return next(new Error("Couldn't find pet with id:", userId));
-    }
+  try {
+    foundPet = await Pet.findById(petId);
+  } catch (err) {
+    return next(new Error("Couldn't find pet with id:", petId));
+  }
 
-    res.json({ pet: foundPet.toObject({ getters: true }) });
+  res.json({ pet: foundPet.toObject({ getters: true }) });
 };
 
-const getPet = async (req, res) => {
-    let pets;
-
-    try {
-        pets = await Pet.find();
-    } catch (err) {
-        return next(new Error("Couldn't find Pets"));
-    }
-    res.json({ pets: pets.map((pet) => pet.toObject({ getters: true })) });
+const getAllPets = async (req, res, next) => {
+  let pets;
+  try {
+    pets = await Pet.find();
+  } catch (err) {
+    return next(new Error("Couldn't find Pets"));
+  }
+  res.json({ pets: pets.map((pet) => pet.toObject({ getters: true })) });
 };
 
-const postPet = async (req, res) => {
-    const { name, age, breed } = req.body;
+const createPet = async (req, res, next) => {
+  const { name, age, breed } = req.body;
 
-    const createdPet = new Pet({
-        name,
-        age,
-        breed,
-    });
+  const createdPet = new Pet({
+    name,
+    age,
+    breed,
+  });
 
-    try {
-        createdPet.save();
-    } catch (err) {
-        return next(new HttpError("Pet creation failed", 500));
-    }
+  try {
+    createdPet.save();
+  } catch (err) {
+    return next(new HttpError("Pet creation failed", 500));
+  }
 
-    res.status(201).json({ pet: createdPet.toObject({ getters: true }) });
+  res.status(201).json({ pet: createdPet.toObject({ getters: true }) });
 };
 
-exports.getPet = getPet;
+exports.getAllPets = getAllPets;
 exports.getPetByID = getPetByID;
-exports.postPet = postPet;
-exports.editPet = editPet;
+exports.createPet = createPet;
+exports.editPetId = editPetId;
 exports.deletePet = deletePet;
