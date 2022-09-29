@@ -12,7 +12,7 @@ const getAllUsers = async (req, res, next) => {
     let users;
 
     try {
-        users = await User.find();
+        users = await User.find().populate("pets").populate("services");
     } catch (err) {
         return next(new Error("Couldn't find Users"));
     }
@@ -25,7 +25,9 @@ const getUserById = async (req, res, next) => {
 
     let user;
     try {
-        user = await User.findById(userId);
+        user = await User.findById(userId)
+            .populate("pets")
+            .populate("services");
     } catch (err) {
         return next(
             new HttpError("Something went wrong, could not find the user"),
@@ -50,6 +52,64 @@ const getUserById = async (req, res, next) => {
     };
 
     return res.status(200).json(userJSON);
+};
+
+const addPetToUser = async (req, res, next) => {
+    const userId = req.params.uid;
+    const { petId } = req.body;
+
+    let user;
+    try {
+        user = await User.findById(userId);
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not find the user"),
+            500
+        );
+    }
+
+    if (!user) {
+        return next(
+            new HttpError("Couldn't find the user with provided id.", 404)
+        );
+    }
+
+    user.pets.push(petId);
+
+    try {
+        user.save();
+    } catch (err) {
+        return next(new HttpError("Adding pet failed, please try again.", 500));
+    }
+
+    return res.status(201).json({ message: "Successfully added pet to user!" });
+};
+
+const getAllPetsByUserId = async (req, res, next) => {
+    const userId = req.params.uid;
+
+    let user;
+    try {
+        user = await User.findById(userId)
+            .populate("pets")
+            .populate("services");
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not find the user"),
+            500
+        );
+    }
+
+    if (!user) {
+        return next(
+            new HttpError("Couldn't find the user with provided id.", 404)
+        );
+    }
+    const pets = user.pets;
+
+    return res
+        .status(200)
+        .json({ pets: pets.map((pet) => pet.toObject({ getters: true })) });
 };
 
 const postSignUp = async (req, res, next) => {
@@ -122,7 +182,6 @@ const postLogin = async (req, res, next) => {
 const updateUserById = async (req, res, next) => {
     const userId = req.params.uid;
 
-    console.log(userId);
     const { name, email, password, age, gender, phone } = req.body;
 
     let updatedUser;
@@ -155,6 +214,8 @@ const updateUserById = async (req, res, next) => {
 
 exports.getAllUsers = getAllUsers;
 exports.getUserById = getUserById;
+exports.addPetToUser = addPetToUser;
+exports.getAllPetsByUserId = getAllPetsByUserId;
 exports.postSignUp = postSignUp;
 exports.postLogin = postLogin;
 exports.updateUserById = updateUserById;

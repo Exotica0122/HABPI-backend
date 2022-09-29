@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -25,9 +26,9 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    pets: [{ type: mongoose.Types.ObjectId, required: true, ref: "Pet" }],
+    pets: [{ type: Schema.Types.ObjectId, required: true, ref: "Pet" }],
     services: [
-        { type: mongoose.Types.ObjectId, required: true, ref: "Service" },
+        { type: Schema.Types.ObjectId, required: true, ref: "Service" },
     ],
 });
 
