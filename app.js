@@ -23,7 +23,6 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ extended: false }));
 
 // use Routes
-// app.use("/", example);
 app.use("/user", user);
 app.use("/pet", pet);
 app.use("/service", service);
