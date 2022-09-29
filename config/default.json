@@ -1,3 +1,3 @@
 {
-    "mongoURI": "mongodb+srv://anpeteran:%21%40%23peter@cluster0.qp56ll4.mongodb.net/books?retryWrites=true&w=majority"
+    "mongoURI": "mongodb+srv://anpeteran:%21%40%23peter@cluster0.qp56ll4.mongodb.net/service?retryWrites=true&w=majority"
 }

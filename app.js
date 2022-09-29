@@ -5,8 +5,8 @@ var cors = require("cors");
 require("dotenv").config({ path: "./config.env" });
 
 // routes
-const example = require("./routes/example-route");
-
+// const example = require("./routes/example-route");
+const pet = require("./routes/pet-route")
 const app = express();
 
 // Connect Database
@@ -19,7 +19,8 @@ app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ extended: false }));
 
 // use Routes
-app.use("/", example);
+// app.use("/", example);
+app.use("/",pet)
 
 const port = process.env.PORT || 8082;
 
