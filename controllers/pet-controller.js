@@ -1,31 +1,36 @@
+const mongoose = require("mongoose");
+const HttpError = require("../models/http-error")
 const Pet = require("../models/pet");
 
 const getPet = async (req, res) => {
+  let pets;
+
   try {
-    const pet = await Pet.find();
-
-    if (pet.length > 0) {
-      res.status(200).json(pet);
-    }
+    pets = await Pet.find();
   } catch (err) {
-    res.status(500).json({ success: false, error: err });
+    return next(new Error("Couldn't find Pets"));
   }
-
+  res.json({ pets: pets.map((pet) => pet.toObject({ getters: true })) });
 };
 
-const postPet = async(req,res) => {
-    
-        let newPet = req.body;
-        let pet = new Pet(newPet);
+const postPet = async (req, res) => {
+  const { name, age, breed } = req.body;
+  console.log(req.body);
+//   const createdPet = new Pet({
+//     name,
+//     age,
+//     breed,
+//   });
 
-        pet.save((err)=>{
-            if(err){
-                return res.status(400).json(err);
-            }
-            res.status(200).json(pet);
-        })
-    
-}
+//   try {
+//     createdPet.save();
+//   } catch (err) {
+//     return next(new HttpError("Pet creation failed", 500));
+//   }
+
+//   res.status(201).json({ pet: createdPet.toObject({ getters: true }) });
+res.status(201);
+};
 
 exports.getPet = getPet;
 exports.postPet = postPet;
