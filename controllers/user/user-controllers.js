@@ -51,5 +51,6 @@ const postSignUp = async (req, res, next) => {
   res.status(201).json({ user: createdUser.toObject({ getters: true }) });
 };
 
+
 exports.getAllUsers = getAllUsers;
 exports.postSignUp = postSignUp;
