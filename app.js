@@ -21,7 +21,7 @@ app.use(express.json({ extended: false }));
 
 // use Routes
 // app.use("/", example);
-app.use("/",pet)
+app.use("/pet",pet)
 
 const port = process.env.PORT || 8082;
 
