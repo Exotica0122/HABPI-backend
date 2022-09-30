@@ -51,7 +51,7 @@ const getPetByID = async (req, res, next) => {
   try {
     foundPet = await Pet.findById(petId);
   } catch (err) {
-    return next(new Error("Couldn't find pet with id:", petId));
+    return next(new HttpError("Couldn't find pet with id:", petId));
   }
 
   res.json({ pet: foundPet.toObject({ getters: true }) });
@@ -62,7 +62,7 @@ const getAllPets = async (req, res, next) => {
   try {
     pets = await Pet.find();
   } catch (err) {
-    return next(new Error("Couldn't find Pets"));
+    return next(new HttpError("Couldn't find Pets"));
   }
   res.json({ pets: pets.map((pet) => pet.toObject({ getters: true })) });
 };

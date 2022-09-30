@@ -84,6 +84,36 @@ const addPetToUser = async (req, res, next) => {
 
     return res.status(201).json({ message: "Successfully added pet to user!" });
 };
+const removePetFromUser = async (req, res, next) => {
+    const userId = req.params.uid;
+    const { petId } = req.body;
+
+    let user;
+    try {
+        user = await User.findById(userId);
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not find the user"),
+            500
+        );
+    }
+
+    if (!user) {
+        return next(
+            new HttpError("Couldn't find the user with provided id.", 404)
+        );
+    }
+
+    user.pets.filter((pet)=> pet!== petId);
+    console.log(user.pets)
+    try {
+        user.save();
+    } catch (err) {
+        return next(new HttpError("Adding pet failed, please try again.", 500));
+    }
+
+    return res.status(201).json({ message: "Successfully added pet to user!" });
+};
 
 const getAllPetsByUserId = async (req, res, next) => {
     const userId = req.params.uid;
@@ -219,3 +249,4 @@ exports.getAllPetsByUserId = getAllPetsByUserId;
 exports.postSignUp = postSignUp;
 exports.postLogin = postLogin;
 exports.updateUserById = updateUserById;
+exports.removePetFromUser=removePetFromUser;
