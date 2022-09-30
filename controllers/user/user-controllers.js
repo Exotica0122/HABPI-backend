@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const id = mongoose.Types.ObjectId();
 
 const User = require("../../models/user");
 const HttpError = require("../../models/http-error");
@@ -84,13 +85,14 @@ const addPetToUser = async (req, res, next) => {
 
     return res.status(201).json({ message: "Successfully added pet to user!" });
 };
-const removePetFromUser = async (req, res, next) => {
+const removePetFromUserById = async (req, res, next) => {
+
     const userId = req.params.uid;
     const { petId } = req.body;
 
     let user;
     try {
-        user = await User.findById(userId);
+        user = await User.findById(userId).populate("pets");
     } catch (err) {
         return next(
             new HttpError("Something went wrong, could not find the user"),
@@ -104,12 +106,12 @@ const removePetFromUser = async (req, res, next) => {
         );
     }
 
-    user.pets.filter((pet)=> pet!== petId);
-    console.log(user.pets)
+    user.pets.pull(petId);
+
     try {
         user.save();
     } catch (err) {
-        return next(new HttpError("Adding pet failed, please try again.", 500));
+        return next(new HttpError("removing pet from the user failed to save", 500));
     }
 
     return res.status(201).json({ message: "Successfully added pet to user!" });
@@ -249,4 +251,4 @@ exports.getAllPetsByUserId = getAllPetsByUserId;
 exports.postSignUp = postSignUp;
 exports.postLogin = postLogin;
 exports.updateUserById = updateUserById;
-exports.removePetFromUser=removePetFromUser;
+exports.removePetFromUserById=removePetFromUserById;
