@@ -85,6 +85,7 @@ const addPetToUser = async (req, res, next) => {
 
     return res.status(201).json({ message: "Successfully added pet to user!" });
 };
+
 const removePetFromUserById = async (req, res, next) => {
 
     const userId = req.params.uid;
@@ -105,16 +106,15 @@ const removePetFromUserById = async (req, res, next) => {
             new HttpError("Couldn't find the user with provided id.", 404)
         );
     }
-
     user.pets.pull(petId);
-
     try {
         user.save();
     } catch (err) {
         return next(new HttpError("removing pet from the user failed to save", 500));
     }
 
-    return res.status(201).json({ message: "Successfully added pet to user!" });
+
+    return res.status(201).json({pets: user.pets, message: "Successfully removed pet from user!" });
 };
 
 const getAllPetsByUserId = async (req, res, next) => {
@@ -251,4 +251,4 @@ exports.getAllPetsByUserId = getAllPetsByUserId;
 exports.postSignUp = postSignUp;
 exports.postLogin = postLogin;
 exports.updateUserById = updateUserById;
-exports.removePetFromUserById=removePetFromUserById;
+exports.removePetFromUserById = removePetFromUserById;
