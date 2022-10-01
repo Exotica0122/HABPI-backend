@@ -212,10 +212,73 @@ const updateUserById = async (req, res, next) => {
         .json({ user: updatedUser.toObject({ getters: true }) });
 };
 
+const postAddSerivceToUser = async (req, res, next) => {
+    const serviceId = req.params.sid;
+    const { userId } = req.body;
+
+    console.log(serviceId);
+    console.log(userId);
+
+    let user;
+    try {
+        user = await User.findById(userId);
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not find the user"),
+            500
+        );
+    }
+
+    if (!user) {
+        return next(
+            new HttpError("Couldn't find the user with provided id.", 404)
+        );
+    }
+
+    user.services.push(serviceId);
+
+    try {
+        user.save();
+    } catch (err) {
+        return next(new HttpError("Adding pet failed, please try again.", 500));
+    }
+
+    return res.status(201).json({ message: "Successfully added pet to user!" });
+};
+
+const getAllServiceByUserId = async (req, res, next) => {
+    const userId = req.params.uid;
+
+    let user;
+    try {
+        user = await User.findById(userId)
+            .populate("pets")
+            .populate("services");
+    } catch (err) {
+        return next(
+            new HttpError("Something went wrong, could not find the user"),
+            500
+        );
+    }
+
+    if (!user) {
+        return next(
+            new HttpError("Couldn't find the user with provided id.", 404)
+        );
+    }
+    const services = user.services;
+
+    return res
+        .status(200)
+        .json({ services: services.map((service) => service.toObject({ getters: true })) });
+};
+
 exports.getAllUsers = getAllUsers;
 exports.getUserById = getUserById;
 exports.addPetToUser = addPetToUser;
 exports.getAllPetsByUserId = getAllPetsByUserId;
+exports.getAllServiceByUserId = getAllServiceByUserId;
 exports.postSignUp = postSignUp;
 exports.postLogin = postLogin;
 exports.updateUserById = updateUserById;
+exports.postAddSerivceToUser = postAddSerivceToUser;
