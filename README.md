@@ -1,6 +1,6 @@
 # HABPI-backend
 
-To run the HABPI-backend in your local environment:
+To run the HABPI-backend in your local environment: .\
 Step 1:
   Run: npm install 
   To install all backend dependancys
