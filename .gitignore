@@ -2,3 +2,6 @@ node_modules
 
 // user settings
 .code-workspace
+
+default.json
+.env
